@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Contact List</title>
+</h:head>
+
+<h:body>
+    <h:form id="form">
+        <p:panelGrid columns="1" layout="grid">
+            <f:facet name="header">
+                CONTACT LIST
+            </f:facet>
+            <h:form id="addButton">
+                <p:commandButton value="Add new" update="dlgForm:display" onclick="PF('contactDialog').show();">
+                    <f:setPropertyActionListener value="#{controllerImpl.newContact}"
+                                                 target="#{controllerImpl.contact}"/>
+                </p:commandButton>
+            </h:form>
+            <br/>
+
+            <p:dataTable id="contactTable" var="cont" value="#{controllerImpl.contactList}" style="align:middle;">
+                <p:column headerText="Name">
+                    <h:outputText value="#{cont.name}"/>
+                </p:column>
+                <p:column headerText="Surname">
+                    <p:commandLink value="#{cont.surname}"/>
+                </p:column>
+                <p:column headerText="Phone number">
+                    <h:outputText value="#{cont.phoneNumber}"/>
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Update" update="dlgForm:display" onclick="PF('contactDialog').show();"
+                                     icon="ui-icon-pencil">
+                        <f:setPropertyActionListener value="#{cont}" target="#{controllerImpl.contact}"/>
+                    </p:commandButton>
+                    <p:commandButton value="Delete" action="#{controllerImpl.delete(cont)}" icon="ui-icon-trash"
+                                     style="margin-right:20px;" update="form"/>
+                </p:column>
+            </p:dataTable>
+        </p:panelGrid>
+    </h:form>
+
+    <p:dialog header="Update" widgetVar="contactDialog" showEffect="explode" hideEffect="explode">
+        <h:form id="dlgForm">
+            <h:panelGrid id="display" columns="4" layout="grid">
+                <h:outputText for="name" value="Name:"/>
+                <p:inputText id="name" value="#{controllerImpl.contact.name}"
+                             required="true" label="Name">
+                    <f:validateLength minimum="2"/>
+                </p:inputText>
+                <h:outputText value="Phone number:"/>
+                <p:inputMask id="phone2" value="#{controllerImpl.contact.phoneNumber}" mask="(999) 999-9999"
+                             required="true"/>
+                <h:outputText for="surname" value="Surname:"/>
+                <p:inputText id="surname" value="#{controllerImpl.contact.surname}"
+                             styleClass="Alingment" required="true" label="surname">
+                    <f:validateRequired/>
+                    <f:validateLength minimum="2"/>
+                </p:inputText>
+                <p:commandButton value="Submit" rendered="#{!(controllerImpl.contact.id == 0)}"
+                                 icon="ui-icon-pencil" validateClient="true"
+                                 action="#{controllerImpl.update}"
+                                 update="form"
+                ></p:commandButton>
+                <p:commandButton value="Submit" rendered="#{(controllerImpl.contact.id == 0)}"
+                                 icon="ui-icon-plus" validateClient="true"
+                                 action="#{controllerImpl.create}"
+                                 update="form"
+                ></p:commandButton>
+            </h:panelGrid>
+        </h:form>
+    </p:dialog>
+</h:body>
+</html>
