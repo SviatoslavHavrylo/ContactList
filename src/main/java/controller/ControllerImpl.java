@@ -22,6 +22,7 @@ public class ControllerImpl implements Serializable {
     public void create () {
         this.getDaoImpl().insert(this.contact);
         validationPassed();
+
         this.contact = new Contact();
     }
 
